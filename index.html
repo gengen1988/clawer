@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="node_modules/angular/angular.js"></script>
+</head>
+<body ng-controller="RootController as root">
+
+  <!-- templates -->
+  <div>
+    <input type="text" placeholder="关键字" ng-model="root.keyword" />
+    <button ng-click="root.search(root.keyword)">搜索</button>
+  </div>
+  <ul>
+    <li ng-repeat="item in root.results">
+      <a ng-href="{{item.link}}"><h1 ng-bind="item.title"></h1></a>
+      <p ng-bind="item.content"></p>
+    </li>
+  </ul>
+
+  <!-- scripts -->
+  <script>
+  function RootController($http) {
+    var vm = this;
+    vm.search = function (keyword) {
+      $http.get('/search', {
+        params: {
+          q: keyword
+        }
+      }).success(function (results) {
+        vm.results = results;
+      });
+    };
+  }
+
+  RootController.$inject = ['$http'];
+  angular.module('app', []);
+  angular.module('app').controller('RootController', RootController);
+  </script>
+
+</body>
+</html>
